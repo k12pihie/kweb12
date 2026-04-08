@@ -6,7 +6,7 @@
 </head>
 <body>
 
-  <h2>User Form</h2>
+  <h2>User Registration</h2>
 
   <form id="form">
     <input type="text" id="name" placeholder="Enter Name" required><br><br>
@@ -17,64 +17,11 @@
 
   <p id="message"></p>
 
-  <!-- ✅ Supabase -->
+  <!-- ✅ Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ✅ Your Script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-      const supabaseUrl = "https://oaxfetshttoqkyawshym.supabase.co";
-      const supabaseKey = "YOUR_KEY_HERE";
-
-      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-      const form = document.getElementById('form');
-      const message = document.getElementById('message');
-
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-
-        if (name.length < 3) {
-          showMessage("Name must be at least 3 characters", "red");
-          return;
-        }
-
-        if (!email.includes("@")) {
-          showMessage("Enter a valid email", "red");
-          return;
-        }
-
-        if (password.length < 6) {
-          showMessage("Password must be at least 6 characters", "red");
-          return;
-        }
-
-        showMessage("Saving...", "orange");
-
-        const { error } = await supabase
-          .from('users')
-          .insert([{ name, email, password }]);
-
-        if (error) {
-          showMessage("Error: " + error.message, "red");
-        } else {
-          showMessage("✅ Data saved!", "green");
-          form.reset();
-        }
-      });
-
-      function showMessage(text, color) {
-        message.textContent = text;
-        message.style.color = color;
-      }
-
-    });
-  </script>
+  <!-- ✅ Your JS file -->
+  <script src="app.js"></script>
 
 </body>
 </html>
