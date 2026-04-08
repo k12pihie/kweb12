@@ -2,30 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Glass UI Form</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glass UI Night Form</title>
+
+  <!-- Embedded CSS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .glass-card {
+      width: 350px;
+      padding: 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      text-align: center;
+      color: #fff;
+    }
+
+    .glass-card h2 {
+      margin-bottom: 20px;
+      color: #00ffe0;
+    }
+
+    .glass-card input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .glass-card button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #00ffe0;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .glass-card button:hover {
+      background: #00c9a7;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+  </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="glass-card">
-    <h2>Register</h2>
+<div class="glass-card">
+  <h2>Register</h2>
 
-    <form id="form">
-      <input type="text" id="name" placeholder="Full Name" required>
-      <input type="email" id="email" placeholder="Email Address" required>
-      <input type="password" id="password" placeholder="Password" required>
+  <form id="form">
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Submit</button>
+  </form>
 
-      <button type="submit">Submit</button>
-    </form>
-
-    <p id="message"></p>
-  </div>
+  <p id="message"></p>
 </div>
 
-<!-- Supabase CDN -->
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const supabaseUrl = "https://oaxfetshttoqkyawshym.supabase.co";
+  const supabaseKey = "YOUR_PUBLISHABLE_ANON_KEY"; // replace here
+
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  const form = document.getElementById("form");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (name.length < 3) return showMessage("Name must be at least 3 characters", "red");
+    if (!email.includes("@")) return showMessage("Invalid email", "red");
+    if (password.length < 6) return showMessage("Password must be at least 6 characters", "red");
+
+    showMessage("Saving...", "orange");
+
+    const { error } = await supabase.from("users").insert([{ name, email, password }]);
+
+    if (error) {
+      showMessage("Error: " + error.message, "red");
+    } else {
+      showMessage("✅ Data saved successfully", "#00ffcc");
+      form.reset();
+    }
+  });
+
+  function showMessage(text, color) {
+    message.textContent = text;
+    message.style.color = color;
+  }
+});
+</script>
 
 </body>
-</html>
+  </html>
