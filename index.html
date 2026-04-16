@@ -70,55 +70,10 @@
       margin-top: 15px;
       font-size: 14px;
     }
-* Menu button */
-.menu-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  font-size: 26px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  z-index: 1001;
-  cursor: pointer;
-}
 
-/* Side menu */
-.side-menu {
-  position: fixed;
-  top: 0;
-  right: -250px;
-  width: 250px;
-  height: 100%;
-  
-  /* Transparent glass effect */
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(10px);
 
-  display: flex;
-  flex-direction: column;
-  padding-top: 80px;
 
-  transition: right 0.4s ease;
-  z-index: 1000;
-}
 
-/* Active state */
-.side-menu.active {
-  right: 0;
-}
-
-/* Menu links */
-.side-menu a {
-  color: white;
-  text-decoration: none;
-  padding: 15px 25px;
-  transition: 0.3s;
-}
-
-.side-menu a:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
   </style>
 </head>
 <body>
@@ -135,19 +90,6 @@
 
   <p id="message"></p>
 </div>
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-<div class="side-menu" id="menu">
-  <a href="#">Home</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Contact</a>
-</div>
-
-
-
-
-  
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -214,10 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 }
- function toggleMenu() {
-  document.getElementById("menu").classList.toggle("active");
-}
-  );
+ 
 </script>
 </body>
   </html>
