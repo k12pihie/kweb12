@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Glass UI Night Form</title>
 
-  <!-- Embedded CSS -->
   <style>
     * {
       margin: 0;
@@ -20,6 +19,52 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+    }
+
+    /* MENU BUTTON */
+    .menu-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 22px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      left: -250px;
+      top: 0;
+      width: 250px;
+      height: 100%;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px);
+      box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+      padding-top: 60px;
+      transition: 0.3s;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 15px 25px;
+      color: #fff;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: rgba(0,255,224,0.2);
+    }
+
+    .sidebar.active {
+      left: 0;
     }
 
     .glass-card {
@@ -70,15 +115,21 @@
       margin-top: 15px;
       font-size: 14px;
     }
-
-
-
-
   </style>
 </head>
 <body>
 
-<div class="glass-card">
+<!-- MENU BUTTON -->
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <a href="#" onclick="openPage('home')">Home</a>
+  <a href="#" onclick="openPage('profile')">Profile</a>
+  <a href="#" onclick="openPage('settings')">Settings</a>
+</div>
+
+<div class="glass-card" id="mainContent">
   <h2>Register</h2>
 
   <form id="form">
@@ -90,13 +141,13 @@
 
   <p id="message"></p>
 </div>
+
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // 🔑 Supabase Config
   const supabaseUrl = "https://oaxfetshttoqkyawshym.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9heGZldHNodHRvcWt5YXdzaHltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTIxODIsImV4cCI6MjA5MTIyODE4Mn0.o0_Cr_5BZeD0KsEFH9EENskcnUty9zHRu8NeLUgl6PI";
 
@@ -112,41 +163,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
 
-    //  Validation
-    if (name.length < 3) {
-      showMessage("Name must be at least 3 characters", "red");
-      return;
-    }
+    if (name.length < 3) return showMessage("Name must be at least 3 characters", "red");
+    if (!email.includes("@")) return showMessage("Enter a valid email", "red");
+    if (password.length < 6) return showMessage("Password must be at least 6 characters", "red");
 
-    if (!email.includes("@")) {
-      showMessage("Enter a valid email", "red");
-      return;
-    }
-
-    if (password.length < 6) {
-      showMessage("Password must be at least 6 characters", "red");
-      return;
-    }
-
-    // ⏳ Loading
     showMessage("Saving...", "yellow");
 
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .insert([{ name, email, password }]);
+    const { error } = await supabase.from("users").insert([{ name, email, password }]);
 
-      if (error) {
-        showMessage("Error: " + error.message, "red");
-        console.log(error);
-      } else {
-        showMessage("Done", "#00ffcc");
-        form.reset();
-        console.log(data);
-      }
-    } catch (err) {
-      showMessage("Unexpected error occurred", "red");
-      console.log(err);
+    if (error) showMessage(error.message, "red");
+    else {
+      showMessage("Done", "#00ffcc");
+      form.reset();
     }
   });
 
@@ -154,9 +182,30 @@ document.addEventListener("DOMContentLoaded", () => {
     message.textContent = text;
     message.style.color = color;
   }
+});
 
+// MENU TOGGLE
+function toggleMenu() {
+  document.getElementById("sidebar").classList.toggle("active");
 }
- 
+
+// PAGE SWITCHING
+function openPage(page) {
+  const content = document.getElementById("mainContent");
+
+  if (page === "home") {
+    content.innerHTML = "<h2>Home</h2><p>Welcome to Home Page</p>";
+  }
+
+  if (page === "profile") {
+    content.innerHTML = "<h2>Profile</h2><p>User profile details here</p>";
+  }
+
+  if (page === "settings") {
+    content.innerHTML = "<h2>Settings</h2><p>Settings options here</p>";
+  }
+}
 </script>
+
 </body>
-  </html>
+</html>
